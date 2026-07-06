@@ -22,7 +22,7 @@ public class DBConnection {
             + "&allowPublicKeyRetrieval=true";
 
     private static final String USER = "root";
-    private static final String PASSWORD = ""; // TODO: 請改成你自己的 MySQL 密碼
+    private static final String PASSWORD = "1234"; // TODO: 請改成你自己的 MySQL 密碼
 
     static {
         try {
