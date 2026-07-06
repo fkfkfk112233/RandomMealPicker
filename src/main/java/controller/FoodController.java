@@ -4,7 +4,7 @@ import java.util.List;
 
 import model.Food;
 import service.FoodService;
-import service.impl.FoodServiceImpl;
+import serviceimpl.FoodServiceImpl;
 
 /**
  * 負責銜接 UI 與 Service 層
