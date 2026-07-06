@@ -34,8 +34,8 @@ public class MemberFrame extends JFrame {
     private static final long serialVersionUID = 1L;
 
     /** 類型選項（下拉選單固定清單，之後要擴充類型只需改這裡） */
-    protected static final String[] TYPE_OPTIONS = { "中式", "日式", "速食", "其他" };
-    protected static final String[] FILTER_OPTIONS = { "全部", "中式", "日式", "速食", "其他" };
+    protected static final String[] TYPE_OPTIONS = { "中式", "日式","西式", "速食", "其他" };
+    protected static final String[] FILTER_OPTIONS = { "全部", "中式", "日式","西式", "速食", "其他" };
 
     protected final FoodController foodController = new FoodController();
     protected final User currentUser;
