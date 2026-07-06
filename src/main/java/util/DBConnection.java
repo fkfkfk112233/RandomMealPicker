@@ -1,7 +1,5 @@
 package util;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -24,14 +22,14 @@ public class DBConnection {
             + "&allowPublicKeyRetrieval=true";
 
     private static final String USER = "root";
-    private static final String PASSWORD = "1234"; // TODO: 請改成你自己的 MySQL 密碼
+    private static final String PASSWORD = ""; // TODO: 請改成你自己的 MySQL 密碼
 
     static {
         try {
             // MySQL 8.0 Connector/J 的 Driver class
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("找不到 MySQL JDBC Driver，請確認 mysql-connector-j 已加入專案 Build Path", e);
+            throw new RuntimeException("找不到 MySQL JDBC Driver，請確認 pom.xml 的 mysql-connector-j 依賴已正確下載", e);
         }
     }
 
