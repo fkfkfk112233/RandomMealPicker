@@ -2,7 +2,7 @@ package controller;
 
 import model.User;
 import service.UserService;
-import serviceimpl.UserServiceImpl;
+import service.impl.UserServiceImpl;
 
 /**
  * 負責銜接登入 / 註冊畫面與 Service 層
