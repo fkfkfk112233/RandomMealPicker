@@ -25,7 +25,7 @@ public class AdminFrame extends MemberFrame {
     /** 在原本版面下方空白處新增管理員專用按鈕 */
     private void initAdminArea() {
         JButton btnUserManage = new JButton("會員管理");
-        btnUserManage.setBounds(20, 460, 150, 30);
+        btnUserManage.setBounds(190, 465, 150, 30);
         btnUserManage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
