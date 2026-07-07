@@ -3,7 +3,7 @@ package service.impl;
 import java.util.List;
 
 import dao.UserDAO;
-import daoimpl.UserDAOImpl;
+import dao.impl.UserDAOImpl;
 import model.Role;
 import model.User;
 import service.UserService;
