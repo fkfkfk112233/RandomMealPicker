@@ -1,5 +1,7 @@
 package service.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -54,6 +56,11 @@ public class FoodServiceImpl implements FoodService {
 
     @Override
     public Food getRandomFood(String type) {
+        return getRandomFood(type, null);
+    }
+
+    @Override
+    public Food getRandomFood(String type, Collection<Integer> excludeIds) {
         List<Food> candidates;
 
         if (type == null || type.isEmpty() || TYPE_ALL.equals(type)) {
@@ -63,6 +70,20 @@ public class FoodServiceImpl implements FoodService {
         }
 
         if (candidates == null || candidates.isEmpty()) {
+            return null;
+        }
+
+        if (excludeIds != null && !excludeIds.isEmpty()) {
+            List<Food> filtered = new ArrayList<>();
+            for (Food food : candidates) {
+                if (!excludeIds.contains(food.getId())) {
+                    filtered.add(food);
+                }
+            }
+            candidates = filtered;
+        }
+
+        if (candidates.isEmpty()) {
             return null;
         }
 
