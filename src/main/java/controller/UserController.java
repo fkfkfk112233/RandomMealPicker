@@ -4,7 +4,7 @@ import java.util.List;
 
 import model.User;
 import service.UserService;
-import serviceimpl.UserServiceImpl;
+import service.impl.UserServiceImpl;
 
 /**
  * 負責銜接會員管理畫面（管理員專用）與 Service 層
