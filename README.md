@@ -41,8 +41,6 @@ RandomMealPicker/
 │   └── util/                         DBConnection, PasswordUtil（BCrypt）
 ```
 
-> 這次整理時，順手清掉了先前殘留的重複套件（舊的 `daoimpl` / `serviceimpl` 孤兒檔案，以及最舊版本沒被使用到的 `ui/MainFrame.java`），統一成 `dao.impl` / `service.impl` 的巢狀命名風格。
-
 ## 資料庫欄位
 
 ### food 資料表（不變）
@@ -70,7 +68,7 @@ RandomMealPicker/
 | food_type | VARCHAR(20) | **選餐當下的類型快照** |
 | picked_at | DATETIME (預設 CURRENT_TIMESTAMP) | 選餐時間 |
 
-刪除皆採真刪除。密碼一律使用 **BCrypt** 加鹽雜湊。
+刪除皆採真刪除。密碼一律使用 **BCrypt** 加密。
 
 ## 建置步驟
 
@@ -81,7 +79,7 @@ RandomMealPicker/
 mysql -u root -p < sql/schema.sql
 ```
 
-**已有既有資料庫**（例如你原本就在用這個系統）：只需執行遷移腳本，新增 `meal_history` 資料表，不會動到現有的 food / user 資料
+**已有既有資料庫**
 ```
 mysql -u root -p < sql/migration_meal_history.sql
 ```
