@@ -3,7 +3,9 @@ package ui;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -19,6 +21,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import controller.FoodController;
+import controller.MealHistoryController;
 import model.Food;
 import model.User;
 
@@ -38,6 +41,7 @@ public class MemberFrame extends JFrame {
     protected static final String[] FILTER_OPTIONS = { "全部", "中式", "日式","西式", "速食", "其他" };
 
     protected final FoodController foodController = new FoodController();
+    protected final MealHistoryController mealHistoryController = new MealHistoryController();
     protected final User currentUser;
 
     protected JPanel contentPane;
@@ -47,9 +51,13 @@ public class MemberFrame extends JFrame {
     protected JTable table;
     protected DefaultTableModel tableModel;
     protected JLabel lblResult;
+    protected JLabel lblExcludedList;
 
     /** 目前選取列的 id，0 代表尚未選取任何列（新增模式） */
     protected int selectedId = 0;
+
+    /** 排除清單：id -> 名稱，僅存在於本次視窗開啟期間，不會寫入資料庫 */
+    protected final Map<Integer, String> excludedFoods = new LinkedHashMap<>();
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new LoginFrame().setVisible(true));
@@ -158,7 +166,7 @@ public class MemberFrame extends JFrame {
         contentPane.add(scrollPane);
     }
 
-    /** 下方：隨機選餐區塊（含登出按鈕的空間） */
+    /** 下方：隨機選餐區塊（含排除功能、登出按鈕的空間） */
     protected void initRandomArea() {
         JLabel lblFilter = new JLabel("篩選類型:");
         lblFilter.setBounds(20, 340, 70, 25);
@@ -178,10 +186,48 @@ public class MemberFrame extends JFrame {
         });
         contentPane.add(btnRandom);
 
+        JButton btnExclude = new JButton("排除");
+        btnExclude.setBounds(335, 340, 75, 25);
+        btnExclude.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onExclude();
+            }
+        });
+        contentPane.add(btnExclude);
+
+        JButton btnClearExclude = new JButton("清空排除");
+        btnClearExclude.setBounds(415, 340, 90, 25);
+        btnClearExclude.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onClearExclude();
+            }
+        });
+        contentPane.add(btnClearExclude);
+
+        JLabel lblExcludedTitle = new JLabel("已排除:");
+        lblExcludedTitle.setBounds(20, 372, 60, 20);
+        contentPane.add(lblExcludedTitle);
+
+        lblExcludedList = new JLabel("（無）");
+        lblExcludedList.setBounds(85, 372, 575, 20);
+        contentPane.add(lblExcludedList);
+
         lblResult = new JLabel("今天吃：尚未選擇", JLabel.CENTER);
         lblResult.setFont(new Font("Microsoft JhengHei", Font.BOLD, 24));
-        lblResult.setBounds(20, 390, 640, 60);
+        lblResult.setBounds(20, 398, 640, 55);
         contentPane.add(lblResult);
+
+        JButton btnHistory = new JButton("選餐歷史");
+        btnHistory.setBounds(20, 465, 150, 30);
+        btnHistory.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onOpenHistory();
+            }
+        });
+        contentPane.add(btnHistory);
     }
 
     /** 登出按鈕（放在隨機選餐同一列的右側空白處） */
@@ -272,16 +318,53 @@ public class MemberFrame extends JFrame {
     protected void onRandomPick() {
         try {
             String filterType = (String) cbFilterType.getSelectedItem();
-            Food food = foodController.getRandomFood(filterType);
+            Food food = foodController.getRandomFood(filterType, excludedFoods.keySet());
 
             if (food == null) {
-                lblResult.setText("查無符合條件的餐點");
+                lblResult.setText("查無符合條件的餐點（可能都被篩選或排除了）");
             } else {
                 lblResult.setText("今天吃：" + food.getName() + "（" + food.getType() + "）");
+                // 會員 / 管理員的選餐結果記錄到歷史（訪客不會使用這個畫面，故不需另外判斷）
+                mealHistoryController.recordPick(currentUser.getId(), food);
             }
 
         } catch (Exception ex) {
             showError(ex);
+        }
+    }
+
+    /** 將表格中目前選取的一列加入排除清單 */
+    protected void onExclude() {
+        int viewRow = table.getSelectedRow();
+        if (viewRow < 0) {
+            JOptionPane.showMessageDialog(this, "請先從表格中選取要排除的餐點", "提示", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int id = (int) tableModel.getValueAt(viewRow, 0);
+        String name = (String) tableModel.getValueAt(viewRow, 1);
+
+        excludedFoods.put(id, name);
+        updateExcludedLabel();
+    }
+
+    /** 清空排除清單 */
+    protected void onClearExclude() {
+        excludedFoods.clear();
+        updateExcludedLabel();
+    }
+
+    /** 開啟選餐歷史查詢畫面 */
+    protected void onOpenHistory() {
+        new MealHistoryFrame(currentUser).setVisible(true);
+    }
+
+    /** 更新畫面上「已排除」清單的顯示文字 */
+    protected void updateExcludedLabel() {
+        if (excludedFoods.isEmpty()) {
+            lblExcludedList.setText("（無）");
+        } else {
+            lblExcludedList.setText(String.join("、", excludedFoods.values()));
         }
     }
 
