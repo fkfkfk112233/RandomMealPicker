@@ -43,14 +43,14 @@ RandomMealPicker/
 
 ## 資料庫欄位
 
-### food 資料表（不變）
+### food 資料表
 | 欄位 | 型態 | 說明 |
 |---|---|---|
 | id | INT (PK, AUTO_INCREMENT) | 主鍵 |
 | name | VARCHAR(100) | 名稱 |
 | type | VARCHAR(20) | 類型，由 Java 端 JComboBox 限制選項（目前含：中式/日式/西式/速食/其他） |
 
-### user 資料表（不變）
+### user 資料表
 | 欄位 | 型態 | 說明 |
 |---|---|---|
 | id | INT (PK, AUTO_INCREMENT) | 主鍵 |
@@ -58,7 +58,7 @@ RandomMealPicker/
 | password | VARCHAR(100) | BCrypt 雜湊後的密碼 |
 | role | VARCHAR(20) | MEMBER 或 ADMIN |
 
-### meal_history 資料表（新增）
+### meal_history 資料表
 | 欄位 | 型態 | 說明 |
 |---|---|---|
 | id | INT (PK, AUTO_INCREMENT) | 主鍵 |
@@ -101,7 +101,7 @@ mysql -u root -p < sql/migration_meal_history.sql
 mvn compile exec:java
 ```
 
-## 新增功能說明
+## 功能說明
 
 ### 選餐歷史
 - 會員 / 管理員每次成功「隨機選餐」，結果都會自動寫入 `meal_history`
